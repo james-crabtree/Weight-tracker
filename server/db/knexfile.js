@@ -34,7 +34,6 @@ export default {
   },
 
   production: {
-    production: {
       client: 'sqlite3',
       connection: {
         filename: '/app/storage/prod.sqlite3',
