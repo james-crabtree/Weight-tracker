@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import * as models from '../../models/Weight';
 import { addWeight } from '../apiClient';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface NewWeightFormProps {
   onAddWeight: (newWeight: models.Weight) => void;
@@ -13,6 +14,7 @@ const weightTemplate: models.newWeight = {
 };
 
 export function NewWeightForm({ onAddWeight }: NewWeightFormProps) {
+  const queryClient = useQueryClient()
   const [form, setForm] = useState(weightTemplate);
 
   function handleForm(event: ChangeEvent<HTMLInputElement>) {
@@ -23,12 +25,23 @@ export function NewWeightForm({ onAddWeight }: NewWeightFormProps) {
     });
   }
 
+  const addMutation = useMutation({
+    mutationFn: addWeight,
+    onSuccess: () => {
+      // this code runs when the mutation is successful
+      // you can use queryClient.invalidateQueries here
+      queryClient.invalidateQueries({
+        queryKey: ['weights'],
+      })
+    },
+  })
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     try {
       // Add the new weight to the database
-      const newWeight = await addWeight(form);
+      const newWeight = await addMutation.mutate(form);
 
       // Update the form state
       setForm(weightTemplate);

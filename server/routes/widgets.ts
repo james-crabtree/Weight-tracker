@@ -31,11 +31,6 @@ router.post('/', async (req, res) => {
 });
 
 
-// PATCH exisitng weight reading
-// Edit already exisiting weight reading in the database
-
-
-
 // DELETE existing weight reading
 // Delete an already exisiting weight reading in the database
 router.delete('/:id', async (req, res) => {
